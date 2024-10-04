@@ -52,6 +52,14 @@ JOIN Mascotas m ON r.ID = m.ID_Raza
 GROUP BY r.Nombre_Raza;
 -- La consulta devuelve el promedio de peso por razas
 
+SELECT 
+    Nombre, Peso,
+    IF(Peso > (SELECT AVG(Peso) FROM Mascotas), 'Gordito', 'Estás bien') AS Estado
+FROM 
+    Mascotas;
+-- La consulta devuelve un estado para las mascotas comparando el peso con el promedio 
+-- y si es superior da un mensaje
+
 SELECT m.ID_Mascota, m.Nombre, m.Genero , r.Nombre_Raza as Raza
 FROM Mascotas m
 JOIN Razas r ON m.ID_Raza = r.ID 
@@ -61,8 +69,8 @@ ORDER BY m.ID_Mascota ASC ;
 
 SELECT Registros_Oxigeno.Registro, Registros_Oxigeno.Fecha, m.Nombre AS "Nombre mascota" FROM Registros_Oxigeno 
 JOIN Mascotas m ON m.ID_Mascota = Registros_Oxigeno.ID_Registros_Oxigeno
-WHERE Registro < 95 AND HOUR(Fecha)=10;
--- La consulta devuelve los registros de oximetria que sean menores de 95 y tomados a las 10 
+WHERE Registro < 95 AND MONTH(Fecha)=9;
+-- La consulta devuelve los registros de oximetria que sean menores de 95 y tomados el mes 9
 
 SELECT m.Nombre, ROUND(AVG(r.Registro),2) AS "Promedio de pasos"
 FROM Registros_Pasos r
@@ -91,24 +99,25 @@ SELECT v.Vacuna,
 FROM Vacunas v;
 -- La consulta devuelve el total de vacunas aplicadas a las mascotas
 
-SELECT p.Nombre, p.Descripcion 
+SELECT p.Nombre,  p.Precio_Venta
 FROM Productos p WHERE Precio_Venta < 15000;
 -- La consulta devuelve los productos que cuestan menos de 15000
 
 SELECT p.Nombre,
-	(SELECT i.Cantidad FROM Inventario i WHERE p.ID_Producto = i.ID_Producto) AS Stock
+	(SELECT i.Cantidad FROM Inventario i WHERE p.ID_Producto = i.ID_Producto AND i.Cantidad <30) AS Stock
 FROM Productos p;
--- La consulta muestra el stock de los productos
+-- La consulta muestra el stock de los productos menores a una cantidad
 
 SELECT t.ID_Ticket, t.Titulo,t.Fecha_Creacion, t.Fecha_Cierre , DATEDIFF(Fecha_Cierre, Fecha_Creacion) AS 'Tiempo de Respuesta'
 FROM Tickets t
 WHERE Fecha_Cierre IS NOT NULL;
 -- La consulta devuelve el tiempo que se demoro en cerrarse el ticket
 
-SELECT p.*, pr.Nombre AS Nombre_Proveedor
+SELECT p.Nombre, p.Descripcion,t.Nombre AS Tipo, p.Costo, p.Precio_Venta, pr.Nombre AS Nombre_Proveedor
 FROM Productos p
 JOIN ProveedoresProductos pp ON p.ID_Producto = pp.productos_ID_Producto
 JOIN Proveedores pr ON pp.proveedores_ID_Proveedor = pr.ID_Proveedor
+JOIN TiposProductos t ON p.ID_TipoProducto = t.ID_TipoProducto
 WHERE p.ID_Producto = 1;
 -- La consulta devuelve la informacion de un producto y sus proveedores
 
@@ -116,22 +125,21 @@ SELECT m.ID_Mantenimiento, m.Fecha_Mantenimiento,  e.Nombre_Estado
 FROM Mantenimiento m
 JOIN Estados e ON m.ID_Estado_Mantenimiento = e.ID_Estado 
 WHERE m.ID_Estado_Mantenimiento = 2;
--- La consulta devuelve los mantenimientos completados
+-- La consulta devuelve los mantenimientos en progreso
 
 SELECT e.Nombre, e.Correo, e.Fecha_Contratacion AS "Fecha_Contratacion", 
-       ROUND(TIMESTAMPDIFF(MONTH, e.Fecha_Contratacion, CURDATE()) / 12,2) AS Duracion
+    CONCAT(ROUND(TIMESTAMPDIFF(MONTH, e.Fecha_Contratacion, CURDATE()) / 12, 2), ' Años') AS Duracion
 FROM Empleados e
-WHERE Estado=1;
+WHERE e.Estado = 1;
 -- La consulta devuelve la duracion que llevan trabajando
 
 SELECT e.Nombre, e.Correo, p.Nombre AS Puesto
 FROM Empleados e
 JOIN Puestos p ON e.ID_Puesto = p.ID_Puesto
-WHERE p.Nombre = 'Técnico de Soporte'
-;
+WHERE p.Nombre = 'Técnico de Soporte';
 -- La consulta devuelve todos los tecnicos
 
-SELECT e.Nombre, e.Correo
+SELECT e.Nombre, e.Correo, e.Telefono
 FROM Empleados e
 WHERE e.Estado = 0;
 -- La consulta devuelve los usuarios inactivos
@@ -148,6 +156,13 @@ JOIN Calificaciones c ON v.ID_Calificacion = c.ID_Calificacion
 WHERE v.ID_Calificacion = 2;
 -- La consulta devuelve las valoraciones regulares
 
+SELECT c.Nombre, COUNT(v.ID_Calificacion) AS 'Mayor Calificacion'
+FROM Calificaciones c
+JOIN Valoraciones v ON c.ID_Calificacion = v.ID_Calificacion
+GROUP BY c.Nombre
+LIMIT 1;
+-- La consulta devuelve la calificacion mas recurrente 
+
 SELECT v.ID_Venta, i.Nombre as producto, v.Cantidad
 FROM Ventas_Producto v
 JOIN Productos i ON i.ID_Producto = v.ID_Producto
@@ -158,7 +173,7 @@ SELECT v.Fecha, I.Nombre AS 'Metodo de Pago', n.Nombre
 FROM Ventas v
 JOIN Usuarios n ON v.ID_Usuario = n.ID_Usuario
 JOIN Metodo_Pago I ON I.ID_Metodo_Pago= v.ID_Metodo_Pago
-WHERE MONTH(v.Fecha) = 9 AND DAY(v.Fecha) BETWEEN 1 AND 5;
+WHERE MONTH(v.Fecha) = 10 AND DAY(v.Fecha) BETWEEN 1 AND 5;
 -- La consulta devuelve las ventas hechas un rango de fecha
 
 SELECT v.Fecha, SUM(ve.Cantidad) AS 'Productos vendidos'
@@ -176,11 +191,6 @@ JOIN Productos p ON vp.ID_Producto = p.ID_Producto
 GROUP BY u.Nombre;
 -- La consulta devuelve el total gastado por un usuario en todas las ventas
 
-SELECT e.ID_Empleado, e.Nombre, t.ID_Ticket, t.Titulo FROM Tickets t
-JOIN empleadostickets tk ON t.ID_Ticket = tk.tickets_ID_Ticket
-JOIN empleados e ON tk.empleados_ID_Empleado = e.ID_Empleado;
--- La consulta devuelve los tickets q estan a cargo cada empleado
-
 SELECT AVG(Total) AS 'Promedio de gastos'
 FROM (
     SELECT SUM(p.Precio_Venta * vp.Cantidad) AS Total
@@ -189,31 +199,38 @@ FROM (
     JOIN Productos p ON vp.ID_Producto = p.ID_Producto
     GROUP BY v.ID_Usuario
 ) AS Gastos;
---
+-- Devuelve los gastos en total del sistema
 
-SELECT MONTH(Fecha) AS Mes, COUNT(*) AS 'Compras'
+SELECT e.Nombre AS Empleado, t.Titulo AS Ticket, Fecha_Creacion, u.Nombre AS Usuario FROM Tickets t
+JOIN empleadostickets tk ON t.ID_Ticket = tk.tickets_ID_Ticket
+JOIN empleados e ON tk.empleados_ID_Empleado = e.ID_Empleado
+JOIN Usuarios u ON t.ID_Usuario = u.ID_Usuario;
+-- La consulta devuelve los tickets q estan a cargo cada empleado
+
+SELECT MONTHNAME(Fecha) AS Mes, COUNT(*) AS Compras
 FROM Ventas
-GROUP BY MONTH(Fecha)
+GROUP BY MONTH(Fecha), MONTHNAME(Fecha)
 ORDER BY Compras DESC
-LIMIT 1;
--- La consulta devuelve el mes donde hubo mayor compras 
+LIMIT 3;
+-- La consulta devuelve los 3 primeros meses donde hubo mayor compras 
 
-SELECT p.Nombre, p.Precio_Venta - p.Costo AS Margen_Ganancia
+SELECT p.Nombre, p.Precio_Venta - p.Costo AS 'Ganancia por producto'
 FROM Productos p;
 -- La consulta devuelve la ganancia que se obtiene por producto
 
-SELECT p.Nombre, COUNT(*) AS Numero_Pedidos
+SELECT p.Nombre, COUNT(*) AS  'Productos Disponibles'
 FROM Proveedores p
 JOIN ProveedoresProductos pp ON p.ID_Proveedor = pp.proveedores_ID_Proveedor
 GROUP BY p.Nombre
-ORDER BY Numero_Pedidos DESC;
+ORDER BY Nombre DESC;
+-- La consulta devuelve los productos q venden o suerten cada proveedor
 
-
-SELECT m.Nombre, COUNT(*) AS Visitas_Veterinarias
+SELECT m.Nombre, COUNT(hm.ID_Registro_Historial) AS Visitas
 FROM Mascotas m
-JOIN Historial_Medico hm ON m.ID_Mascota = hm.ID_Mascota
+LEFT JOIN Historial_Medico hm ON m.ID_Mascota = hm.ID_Mascota
 GROUP BY m.Nombre
-ORDER BY Visitas_Veterinarias DESC;
+ORDER BY Visitas DESC;
+-- Devuelve la cantidad de visitas al veterinaria que tienen las mascotas
 
 SELECT p.Nombre, SUM(vp.Cantidad) AS Cantidad_Vendida
 FROM Ventas_Producto vp
@@ -224,12 +241,36 @@ GROUP BY p.Nombre
 ORDER BY Cantidad_Vendida DESC;
 -- La consulta devuelve la cantidad de productos vendidos en un rango de fecha
 
-
 SELECT u.Nombre 
 FROM Usuarios u
 JOIN Ventas v ON u.ID_Usuario = v.ID_Usuario
 WHERE v.Fecha BETWEEN CURDATE() - INTERVAL 6 MONTH AND CURDATE()
 GROUP BY u.Nombre
 HAVING COUNT(*)> 1;
--- La consulta devuelve losientes que han comprado más de 1 productos en el último semestre mes:
+-- La consulta devuelve clientes que han comprado más de 1 productos en el último semestre
 
+SELECT d.Nombre,
+    (SELECT ROUND(AVG(p.Precio_Base), 2) FROM Puestos p WHERE d.ID_Departamento = p.ID_Departamento) AS Promedio_Sueldo
+FROM Departamentos d
+ORDER BY Promedio_Sueldo ASC;
+-- La consulta devuelve el promedio de los sueldos por departamento
+
+SELECT e.Nombre, p.Nombre AS Puesto, d.Nombre AS Departamento, p.Precio_Base AS Salario, pg.Fecha_Pago AS 'Fecha de Pago'
+FROM Departamentos d
+JOIN Puestos p ON d.ID_Departamento = p.ID_Departamento
+JOIN Empleados e ON e.ID_Puesto = p.ID_Puesto
+JOIN Pagos pg ON e.ID_Empleado = pg.ID_Empleado;
+-- La consulta devuelve la informacion de pagos de empleados con sus puestos y el departamento que pertenece
+
+
+SELECT s.Nombre, COUNT(m.ID_Servicio) AS Cantidad
+FROM servicios_mantenimiento s
+LEFT JOIN mantenimiento m ON m.ID_Servicio = s.ID_Servicio
+GROUP BY s.Nombre
+HAVING COUNT(m.ID_Servicio) = 0;
+-- La consulta devuelve los servicios de mantenimiento que no han sido usado
+
+SELECT Nombre, Hora_Apertura, Hora_Cierre,
+	CONCAT(HOUR(TIMEDIFF(Hora_Cierre, Hora_Apertura)), ' Horas') AS Duracion
+FROM Veterinarias;
+-- La consulta devuelve la duracion de las veterinarias abiertas

@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Veterinarias(
     Correo VARCHAR(100) NOT NULL UNIQUE,
     Telefono VARCHAR(10) NOT NULL UNIQUE,
     Hora_Apertura TIME NOT NULL,
-    Horra_Cierre TIME NOT NULL
+    Hora_Cierre TIME NOT NULL
  );
  
  -- Tabla intemedia ciudadveterinaria

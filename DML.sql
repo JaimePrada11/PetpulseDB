@@ -19,7 +19,7 @@ INSERT INTO Ciudad (Nombre_Ciudad, ID_Pais) VALUES
 ('Río de Janeiro', 5),
 ('São Paulo', 5);
 
-INSERT INTO Veterinarias (Nombre, Correo, Telefono, Hora_Apertura, Horra_Cierre) VALUES 
+INSERT INTO Veterinarias (Nombre, Correo, Telefono, Hora_Apertura, Hora_Cierre) VALUES 
 ('Los Ángeles Veterinaria', 'info@losangelesvet.com', '3004567890', '08:00:00', '17:00:00'),
 ('El Buen Pastor', 'contacto@buenpastorvet.com', '3012345678', '09:00:00', '18:00:00'),
 ('PetCare', 'info@petcare.com', '3029876543', '08:30:00', '17:30:00'),
@@ -734,23 +734,23 @@ INSERT INTO Mantenimiento (Fecha_Mantenimiento, ID_Ticket, ID_Servicio, ID_Estad
 ('2023-01-13', 1, 1, 3),
 ('2023-01-21', 3, 2, 2),
 ('2023-01-26', 5, 3, 1),
-('2023-02-01', 8, 4, 4),
-('2023-02-10', 12, 5, 1),
+('2023-02-01', 8, 1, 4),
+('2023-02-10', 12, 4, 1),
 ('2023-02-15', 14, 1, 2),
 ('2023-03-10', 16, 2, 3),
 ('2023-03-15', 7, 3, 3),
 ('2023-03-20', 13, 4, 4),
-('2023-03-25', 9, 5, 2),
+('2023-03-25', 9, 4, 2),
 ('2023-04-01', 15, 1, 1),
 ('2023-04-05', 6, 2, 1),
 ('2023-04-10', 2, 3, 2),
 ('2023-04-15', 4, 4, 3),
-('2023-04-20', 11, 5, 4),
+('2023-04-20', 11, 3, 4),
 ('2023-04-25', 17, 1, 2),
 ('2023-05-01', 18, 2, 1),
 ('2023-05-05', 19, 3, 3),
 ('2023-05-10', 20, 4, 4),
-('2023-05-15', 8, 5, 3);
+('2023-05-15', 8, 2, 3);
 
 INSERT INTO empleadosmantenimiento(empleados_ID_Empleado,mantenimiento_ID_Mantenimiento) VALUES
 (3, 6),
