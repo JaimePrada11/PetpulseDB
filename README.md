@@ -23,6 +23,9 @@
 | Indice | Titulo  |
 |--|--|
 | 📍 | Analisis inicial |
+| 📊 | Entidades Principales|
+| 🌐 | Relaciones|
+| 🗺️ | Diagrama UML|
 | 📦 | Tablas SQL  |
 | 🧩 | Datos DML |
 | 🤝 |LLamados|
@@ -46,6 +49,66 @@ Estas tecnologías buscan proporcionar un monitoreo constante y preciso de la sa
 
 En resumen, se busca mejorar la atención veterinaria a través de dispositivos tecnológicos que permitan un seguimiento continuo de la salud de las mascotas, reduciendo el riesgo de complicaciones y asegurando una mejor calidad de vida para los animales.
 
+
+## 📊 Entidades Principales
+
+  - **Usuarios**: Esta entidad gestiona la información de los usuarios registrados en el sistema, incluyendo su nombre, dirección y datos de contacto. 
+
+  - **Mascotas**: Representa a las mascotas registradas en el sistema, almacenando información como el nombre, raza, fecha de nacimiento y otros detalles relevantes. Facilita la gestión de la atención y los servicios ofrecidos a cada mascota.
+
+  - **Veterinarios**: Esta entidad se encarga de gestionar la información de los veterinarios asociados al sistema, incluyendo su nombre, número de contacto y horarios de atención. 
+
+  - **Inventario**: Maneja la información sobre el stock de productos disponibles en el sistema. Permite el seguimiento de la cantidad de productos y su disponibilidad para la venta o uso en servicios.
+
+  - **Productos**: Esta entidad almacena detalles sobre los productos ofrecidos, incluyendo descripciones, precios y características. 
+
+  - **Mantenimiento**: Gestiona los detalles de las actividades de mantenimiento realizadas, incluyendo la relación con los servicios específicos y la fecha en que se llevaron a cabo.
+
+  - **Proveedores**: Esta entidad gestiona la información sobre los proveedores que suministran productos o servicios al sistema. Incluye detalles como el nombre de la empresa, el número de contacto y otros datos relevantes para facilitar la comunicación y las transacciones.
+
+  - **Tickets**: Registra las solicitudes de asistencia o soporte realizadas por los usuarios. Esta entidad incluye detalles sobre el asunto del ticket, una descripción del problema, el estado de la solicitud y la fecha de creación, permitiendo un seguimiento eficaz de las incidencias y su resolución.
+
+  - **Ventas**: Maneja la información sobre las transacciones de compra realizadas por los usuarios. Incluye detalles como la fecha de la venta, el método de pago utilizado y el usuario que realizó la compra.
+
+  - **Valorizaciones**: Permite a los usuarios valorar los servicios que han recibido, proporcionando retroalimentación sobre la calidad del mantenimiento realizado.
+
+
+## 🌐 Relaciones entre las entidades
+
+
+1. **Mantenimiento** a **Empleados**: **Muchos a Muchos**  
+   Un mantenimiento puede ser realizado por varios empleados, Un empleado puede estar involucrado en múltiples mantenimientos. Esta relacion se da con la tabla intermedia de EmpleadosMantenimiento
+
+2. **Empleados** a **Tickets**: **Muchos a Muchos**  
+Un ticket puede ser atendido por múltiples empleados.Un empleado puede gestionar múltiples tickets. La relacion se da con la tabla intermedia de Empleadostickets
+
+3. **Tickets** a **Usuarios**: **Uno a Muchos**  
+   Un usuario puede crear múltiples tickets, pero cada ticket está asociado a un único usuario.
+
+4. **Tickets** a **Mantenimiento**: **Uno a Muchos**  
+   Un ticket puede dar lugar a uno o varios mantenimientos, pero cada mantenimiento está vinculado a un único ticket.
+
+5. **Usuarios** a **Tickets**: **Uno a Muchos**  
+    Un usuario puede dar lugar a uno o varios valoraciones, pero cada valoracion está vinculado a un único usuario.
+
+
+6. **Proveedores** a **Productos**: **Muchos a Muchos**  
+Un proveedor puede ofrecer múltiples productos.Un producto puede ser suministrado por múltiples proveedores.Se representa con la tabla intermedia de ProveedoresProducto
+7. **Ventas** a **Usuarios**: **Uno a Muchos**  
+   Un usuario puede realizar múltiples ventas, pero cada venta está asociada a un único usuario.
+
+8. **Ventas** a **Productos**: **Muchos a Muchos**  
+   Una venta puede incluir múltiples productos.Un producto puede ser parte de múltiples ventas. La relacion se representa en la tabla intermedia de VentasProductos
+
+9. **Inventario** a **Productos**: **Uno a Muchos**  
+   Un inventario puede contener múltiples productos.  Cada producto está relacionado con un solo registro de inventario
+
+Estas relaciones estructuran la base de datos y facilitan la gestión de información, asegurando un flujo coherente y organizado de datos.
+
+
+## 🗺️ Diagrama UML
+
+![pETPULSE ER](Petpulse.jpg)
 
 ## 📦 Tablas SQL  
 ACa mostraremos algunas de las tablas el consolidado de las tablas esta en el Archivo DDL segun lo estipilado
